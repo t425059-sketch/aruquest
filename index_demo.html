@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>あるくえすと</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
+<style>
+/* ===== 冒険の書テーマ: まずここの色を変えると全体の雰囲気が変わる ===== */
+:root{
+  --paper:#F1E3C0;   /* 羊皮紙 */
+  --card:#FFF8E4;    /* カードの紙 */
+  --ink:#3A2A1A;     /* インクの茶色 */
+  --mute:#7A6548;
+  --leather:#3B2415; /* 革の表紙 */
+  --gold:#B8892B;    /* 金の縁取り */
+  --seal:#A32A2A;    /* 封蝋の赤 */
+  --o:#B5532A;--b:#2F5D8A;--g:#4B7A3A;
+  --hf:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho","BIZ UDPMincho",serif;
+}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:var(--leather) radial-gradient(rgba(255,255,255,.05) 1px,transparent 1.5px) 0 0/6px 6px;font-family:"Hiragino Mincho ProN","Yu Mincho","BIZ UDPMincho","Noto Serif JP",serif;line-height:1.6}
+/* ページ本体: 羊皮紙 + 金のふち + 左の背表紙の影 */
+.app{max-width:480px;margin:0 auto;min-height:100dvh;padding:calc(20px + env(safe-area-inset-top)) 20px calc(92px + env(safe-area-inset-bottom));
+  background:radial-gradient(ellipse at center,#F8ECCD 40%,var(--paper) 100%);
+  box-shadow:inset 0 0 0 2px var(--gold),inset 0 0 0 6px var(--paper),inset 0 0 0 7px var(--gold),inset 14px 0 18px -10px rgba(58,42,26,.35),0 0 24px rgba(0,0,0,.5)}
+h1,h2{font-family:var(--hf)}
+h1{font-size:26px;margin:4px 0 0;letter-spacing:.08em}
+h1::after{content:"◆ ◇ ◆";display:block;font-size:10px;color:var(--gold);letter-spacing:.5em;margin-top:2px}
+h2{font-size:17px;margin:6px 0}
+.sub{margin:2px 0 14px;color:var(--mute);font-size:14px}
+.sub b{background:var(--leather);color:#F6E7B8;border:1px solid var(--gold);border-radius:999px;padding:1px 10px;margin-right:8px}
+.o{--c:var(--o)}.b{--c:var(--b)}.g{--c:var(--g)}
+.note{position:relative;background:var(--card);border:1px solid #CDB88A;border-left:9px solid var(--c,var(--ink));border-radius:3px 14px 3px 14px;padding:12px 14px 14px;margin:0 0 14px;box-shadow:2px 3px 0 rgba(58,42,26,.2);transform:rotate(var(--r,0deg))}
+.tag{display:inline-block;font-size:12px;padding:0 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 18%,var(--card))}
+.pt{margin:0 0 8px;color:var(--mute);font-size:14px}
+button,.btn{display:block;width:100%;min-height:46px;margin:8px 0 0;border:2px solid var(--gold);border-radius:12px;background:linear-gradient(#5A3A22,var(--leather));color:#F6E7B8;font:inherit;font-weight:700;text-align:center;line-height:42px;cursor:pointer;text-shadow:0 1px 0 rgba(0,0,0,.4)}
+button:disabled{opacity:.35;cursor:default}
+.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);text-shadow:none}
+:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+/* スタンプ = 封蝋(赤い印) */
+.stamp{display:inline-block;border:3px double var(--seal);color:var(--seal);background:rgba(163,42,42,.06);border-radius:8px;padding:0 12px;font-weight:700;transform:rotate(-8deg);animation:pop .35s ease-out}
+.done{opacity:.8}
+.done .stamp{position:absolute;right:12px;top:44px}
+.stamp.big{font-size:24px;margin:4px 0 10px}
+@keyframes pop{from{transform:scale(1.9) rotate(-8deg);opacity:0}}
+.foot{color:var(--mute);font-size:13px;text-align:center}
+.dex{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.page{margin:0;background:var(--card);padding:8px 8px 10px;border-radius:3px 12px 3px 12px;box-shadow:2px 3px 0 rgba(58,42,26,.2);border:1px solid #CDB88A;border-top:6px solid var(--c,#B9A98A)}
+.ph{width:100%;aspect-ratio:1;border-radius:6px;background:#EADCB8;border:2px solid #8B6B3E;display:grid;place-items:center;font-size:44px;color:var(--mute)}
+.page.empty{border-top-style:dashed;background:transparent;box-shadow:none;border:2px dashed #B9A07A}
+.page.empty .ph{border:0;font-size:34px}
+figcaption{text-align:center;font-size:14px;margin-top:6px}
+.card{background:var(--card);border:1px solid #CDB88A;border-radius:14px 3px 14px 3px;padding:14px;box-shadow:2px 3px 0 rgba(58,42,26,.2);margin-bottom:18px}
+.big{font-size:44px;font-weight:700;margin:0;line-height:1.2;font-family:var(--hf)}.big small{font-size:16px;margin-left:4px}
+.bar{height:14px;background:#E3D2A6;border:1px solid var(--gold);border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#E8C468)}
+.h2 small{font-weight:400;color:var(--mute);margin-left:6px}
+.cp{--c:var(--o)}.cp p{margin:0}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--leather);border-top:2px solid var(--gold);padding-bottom:env(safe-area-inset-bottom)}
+nav[hidden]{display:none}
+nav button{margin:0;border:0;border-radius:0;background:transparent;color:#CDB88A;min-height:56px;line-height:1.3;width:auto;flex:1;font-size:14px;text-shadow:none}
+nav button[aria-current=page]{color:#F6E7B8;box-shadow:inset 0 -5px var(--gold)}
+#sheet{position:fixed;inset:0;background:rgba(30,18,8,.7);display:flex;align-items:flex-end;justify-content:center;z-index:5}
+#sheet[hidden]{display:none}
+.sh{background:var(--paper);border-top:3px solid var(--gold);width:100%;max-width:480px;max-height:92dvh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.prev{min-height:150px;border:2px dashed #B9A07A;border-radius:10px;display:grid;place-items:center;color:var(--mute);font-size:14px;overflow:hidden;background:var(--card);text-align:center}
+.prev .em{font-size:64px;line-height:1.3}
+.ai{background:var(--card);border-radius:3px 12px 3px 12px;padding:10px 14px;border-left:8px solid var(--c);margin-top:10px}
+.ai p{margin:4px 0}.ai small,.note2{color:var(--mute);font-size:12px}
+/* --- スプラッシュ・ログイン・ホーム --- */
+.center{min-height:calc(100dvh - 120px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.logo{width:120px;height:120px;filter:drop-shadow(2px 3px 0 rgba(58,42,26,.3))}
+.logo.s{width:72px;height:72px}
+.tabs{display:flex;gap:8px;width:100%;margin-top:8px}
+.tabs button{margin:0}
+label.f{display:block;width:100%;font-size:14px;margin-top:10px;text-align:left}
+input.t{display:block;width:100%;min-height:46px;margin-top:4px;padding:0 12px;border:2px solid var(--ink);border-radius:10px;background:var(--card);font:inherit;font-size:16px;color:var(--ink)}
+.err{width:100%;min-height:1.6em;margin:8px 0 0;color:var(--seal);font-size:13px;text-align:left}
+.menu{display:grid;gap:14px;margin-bottom:18px}
+.m{display:flex;align-items:center;gap:14px;min-height:88px;padding:12px 14px;text-align:left;line-height:1.4;background:var(--card);color:var(--ink);border:1px solid #CDB88A;border-left:9px solid var(--c);border-radius:3px 14px 3px 14px;box-shadow:2px 3px 0 rgba(58,42,26,.2);text-shadow:none}
+.m *{pointer-events:none}
+.m .e{font-size:34px}
+.m b{display:block;font-size:18px;font-family:var(--hf)}
+.m small{display:block;color:var(--mute);font-weight:400;font-size:13px}
+/* --- クーポン券(デモ) --- */
+.ticket{background:var(--card);border:2px dashed var(--gold);border-radius:12px;padding:14px;text-align:center;margin-top:6px}
+.ticket .tk{font-family:var(--hf);font-size:22px;font-weight:700;margin:6px 0}
+.bc{height:44px;margin:10px 0 4px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 10px)}
+.code{letter-spacing:.2em;font-size:13px;color:var(--mute)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main class="app" id="app"></main>
+<nav aria-label="メニュー" hidden>
+<button data-v="h">ホーム</button><button data-v="q">お題</button><button data-v="d">図鑑</button><button data-v="p">ポイント</button>
+</nav>
+<div id="sheet" hidden role="dialog" aria-modal="true"></div>
+<script>
+/* ---- データ ---- */
+const Q=[
+{id:'a',k:'発見',c:'o',t:'マンホールのふたを探そう',p:10,n:'マンホール',h:'マンホールの柄は街ごとに違い、土地の花や名所が描かれていることが多いです。'},
+{id:'b',k:'発見',c:'o',t:'変わった標識を見つけよう',p:10,n:'標識',h:'標識には、地域の注意やルールを伝えるご当地のデザインがあります。'},
+{id:'c',k:'ことば',c:'b',t:'知らない文字を見つけよう',p:10,n:'看板の文字',h:'「Terima kasih(テリマカシ)」はインドネシア語で「ありがとう」の意味です。'},
+{id:'d',k:'SDGs',c:'g',t:'ゴミを3個ひろおう',p:20,n:'ゴミ拾い',h:'ありがとう！街が少しきれいになりました。'}];
+/* お題ごとの絵文字(デモ用の写真がわり) */
+const EM={a:'🕳️',b:'🚸',c:'🔤',d:'🗑️'};
+/* 最初から図鑑に入っているデモ用ページ(増やしたいときはここに足す) */
+const X=[{n:'ご当地ポスト',e:'📮',c:'o'},{n:'古い石碑',e:'🗿',c:'b'},{n:'ねこ',e:'🐈',c:'g'}];
+/* 協賛店クーポン(名前, 内容, 必要pt) */
+const CP=[['○○カフェ','ドリンク50円引き',100],['△△公園の売店','ソフトクリーム20円引き',200],['□□商店街','コロッケ1個おまけ',300]];
+
+const $=s=>document.querySelector(s),app=$('#app'),sheet=$('#sheet');
+let S={pts:0,done:[]},view='s',cur=null;
+try{S=JSON.parse(localStorage.getItem('mq'))||S}catch(e){}
+const save=()=>{try{localStorage.setItem('mq',JSON.stringify(S))}catch(e){}};
+const lv=()=>1+Math.floor(S.pts/50);
+sheet.onclick=e=>{if(e.target===sheet)sheet.hidden=true};
+
+/* ---- ログイン(見た目だけ。パスワードは保存も送信もしない) ---- */
+const AK='mq_auth',DAYS=30;
+const getAuth=()=>{try{const a=JSON.parse(localStorage.getItem(AK));if(a&&a.exp>Date.now())return a}catch(e){}return null};
+let user=getAuth(),mode='in',err='',nm='';
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LOGO=c=>`<svg class="logo ${c||''}" viewBox="0 0 120 120" role="img" aria-label="あるくえすとのアイコン"><rect width="120" height="120" rx="28" fill="#3B2415"/><rect x="5" y="5" width="110" height="110" rx="24" fill="none" stroke="#B8892B" stroke-width="3"/><path d="M60 22c-14 0-24 10-24 23 0 17 24 43 24 43s24-26 24-43c0-13-10-23-24-23z" fill="#F1E3C0"/><circle cx="60" cy="45" r="9" fill="#A32A2A"/><path d="M30 98c10-8 20-8 30 0s20 8 30 0" stroke="#E8C468" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`;
+const go=v=>{view=v;err='';render();scrollTo(0,0)};
+
+/* ---- 画面 ---- */
+function sv(){
+  setTimeout(()=>{if(view==='s')go(user?'h':'a')},1500);
+  return `<div class="center" data-skip>${LOGO()}<h1>あるくえすと</h1><p class="sub">街を歩いて、見つけて、あつめよう</p><p class="foot">タップで冒険の書をひらく</p></div>`}
+
+function av(){const up=mode==='up';
+  return `<div class="center">${LOGO('s')}<h1>あるくえすと</h1>
+  <div class="tabs"><button class="${up?'ghost':''}" data-mode="in">ログイン</button><button class="${up?'':'ghost'}" data-mode="up">新規作成</button></div>
+  <form id="af" style="width:100%" novalidate>
+    <label class="f">ニックネーム<input class="t" id="un" maxlength="12" autocomplete="username" value="${esc(nm)}"></label>
+    <label class="f">パスワード(6文字以上)<input class="t" id="pw" type="password" autocomplete="${up?'new-password':'current-password'}"></label>
+    <p class="err" role="alert">${err}</p>
+    <button type="submit">${up?'アカウントを作る':'ログイン'}</button>
+  </form>
+  <p class="note2">デモのため、入力した内容はどこにも送信されません。</p></div>`}
+
+function hv(){
+  return `<h1>${esc(user.name)}の冒険の書</h1><p class="sub"><b>Lv.${lv()}</b>${S.pts}pt</p>
+  <div class="menu">
+    <button class="m o" data-v="q"><span class="e">🧭</span><span><b>今日のお題</b><small>${S.done.length}/${Q.length} クリア</small></span></button>
+    <button class="m b" data-v="d"><span class="e">📖</span><span><b>図鑑</b><small>${X.length+S.done.length}ページ集めた</small></span></button>
+    <button class="m g" data-v="p"><span class="e">⭐</span><span><b>ポイント</b><small>次のレベルまであと${50-S.pts%50}pt</small></span></button>
+  </div>
+  <button class="ghost" id="lo">ログアウト</button>`}
+
+function qv(){return `<h1>きょうのお題</h1><p class="sub"><b>Lv.${lv()}</b>${S.done.length}/${Q.length} クリア</p>`+Q.map((q,i)=>{const d=S.done.includes(q.id);
+return `<article class="note ${q.c} ${d?'done':''}" style="--r:${i%2?.7:-.7}deg"><span class="tag">${q.k}</span><h2>${q.t}</h2><p class="pt">+${q.p}pt</p>${d?'<span class="stamp">クリア</span>':`<button data-cap="${q.id}">撮る・行動する</button>`}</article>`}).join('')+'<p class="foot">お題は毎日かわります(デモでは4つ固定)</p>'}
+
+/* 図鑑: 最初から3ページ(X)入っていて、お題をクリアすると4ページ分が順に埋まる */
+function dv(){
+  const pg=(x,c)=>`<figure class="page ${c}"><div class="ph">${x.e}</div><figcaption>${x.n}</figcaption></figure>`;
+  const em=t=>`<figure class="page empty"><div class="ph">？</div><figcaption>${t}</figcaption></figure>`;
+  return `<h1>図鑑</h1><p class="sub">${X.length+S.done.length}ページ集めた</p><div class="dex">`
+    +X.map(x=>pg(x,x.c)).join('')
+    +Q.map(q=>S.done.includes(q.id)?pg({n:q.n,e:EM[q.id]},q.c):em('未発見')).join('')
+    +em('？？？')+'</div>'}
+
+/* ポイント: たまっていなくても「交換」を押せば、交換後の画面が見える(デモ) */
+function pv(){const n=S.pts%50;
+return `<h1>ポイント</h1><p class="sub">たまったポイントは協賛店のクーポンに(デモ:ポイントが足りなくても交換画面を見られます)</p><section class="card"><p class="big">${S.pts}<small>pt</small></p><p>Lv.${lv()}　次のレベルまであと${50-n}pt</p><div class="bar"><i style="width:${n*2}%"></i></div></section><h2 class="h2">協賛店のクーポン<small>(サンプル)</small></h2>`+
+CP.map(([a,b,c],i)=>`<article class="note cp"><h2>${a}</h2><p>${b}</p><button data-cp="${i}">${c}ptで交換</button></article>`).join('')+'<button class="ghost" id="rs">最初からやり直す</button>'}
+
+function render(){
+  if(!user&&view!=='s'&&view!=='a')view='a';
+  app.innerHTML={s:sv,a:av,h:hv,q:qv,d:dv,p:pv}[view]();
+  $('nav').hidden=(view==='s'||view==='a');
+  document.querySelectorAll('nav button').forEach(b=>b.dataset.v===view?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'))}
+
+/* ---- 撮影シート(デモ: 「写真を撮る・えらぶ」を押すだけでクリア) ---- */
+function openCap(id){cur=Q.find(q=>q.id===id);
+sheet.innerHTML=`<div class="sh"><h2>${cur.t}</h2><div class="prev">ここに撮った写真が出ます<br>(デモでは押すだけでOK)</div><button id="shot">📷 写真を撮る・えらぶ</button><button class="ghost" id="cl">とじる</button><p class="note2">本番では、人の顔は写さないでください。歩きながらの操作はしないでください。</p></div>`;
+sheet.hidden=false;
+$('#shot').onclick=clearQuest;
+$('#cl').onclick=()=>sheet.hidden=true}
+
+function clearQuest(){
+  const q=cur,old=lv();
+  if(S.done.includes(q.id))return;
+  sheet.innerHTML='<div class="sh"><p>AIが解説を考えています…</p></div>';
+  setTimeout(()=>{
+    S.done.push(q.id);S.pts+=q.p;save();render();   // 押した時点でクリア・ポイント加算・図鑑に登録
+    sheet.innerHTML=`<div class="sh ${q.c}"><span class="stamp big">${q.k==='SDGs'?'ありがとう！':'発見！'}</span><div class="prev"><span class="em">${EM[q.id]}</span></div><div class="ai"><b>AIの解説</b><p>${q.h}</p><small>※デモ用の決め打ちの解説です。本番は撮った写真をAIが判別します。</small></div><p class="pt" style="margin-top:10px">+${q.p}pt ／ 図鑑に「${q.n}」が増えました</p><button id="ok">つづける</button><button class="ghost" id="dx">図鑑を見る</button></div>`;
+    const fin=v=>{sheet.hidden=true;if(v)go(v);if(lv()>old)levelUp()};
+    $('#ok').onclick=()=>fin();
+    $('#dx').onclick=()=>fin('d')},700)}
+
+function levelUp(){sheet.hidden=false;sheet.innerHTML=`<div class="sh g" style="text-align:center"><span class="stamp big">レベルアップ！</span><p class="big">Lv.${lv()}</p><p>新しいお題と図鑑のページが増えました。</p><button id="ok">つづける</button></div>`;$('#ok').onclick=()=>sheet.hidden=true}
+
+/* ---- クーポン交換後の画面(デモ。ポイントは減らさない) ---- */
+function openCp(i){const [a,b,c]=CP[i];
+sheet.innerHTML=`<div class="sh o"><span class="stamp big">交換しました！</span><div class="ticket"><span class="tag">クーポン</span><h2>${a}</h2><p class="tk">${b}</p><div class="bc"></div><p class="code">SAMPLE-${i+1}234</p></div><p class="note2" style="margin-top:10px">※デモ画面です。本番では${c}pt以上たまっていないと交換できず、交換するとポイントが減ります。</p><button id="cl">もどる</button></div>`;
+sheet.hidden=false;
+$('#cl').onclick=()=>sheet.hidden=true}
+
+/* ---- クリック・送信 ---- */
+document.addEventListener('click',e=>{const t=e.target;
+if(t.closest('[data-skip]'))go(user?'h':'a');
+else if(t.dataset.v)go(t.dataset.v);
+else if(t.dataset.mode){mode=t.dataset.mode;err='';render()}
+else if(t.dataset.cap)openCap(t.dataset.cap);
+else if(t.dataset.cp!==undefined)openCp(+t.dataset.cp);
+else if(t.id==='lo'){try{localStorage.removeItem(AK)}catch(x){}user=null;go('a')}
+else if(t.id==='rs'&&confirm('進み具合をリセットしますか？')){S={pts:0,done:[]};save();render()}});
+
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='af')return;
+  e.preventDefault();
+  nm=$('#un').value.trim();const pw=$('#pw').value;
+  if(!nm){err='ニックネームを入れてね';return render()}
+  if(pw.length<6){err='パスワードは6文字以上にしてね';return render()}
+  user={name:nm,exp:Date.now()+DAYS*864e5};
+  try{localStorage.setItem(AK,JSON.stringify(user))}catch(x){}
+  go('h')});
+
+render();
+</script>
+</body>
+</html>
