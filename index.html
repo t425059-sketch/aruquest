@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>あるくえすと</title>
+<title>街たんけんノート(仮)</title>
 <style>
 :root{--bg:#F4F6F8;--ink:#1E2A3A;--mute:#65718A;--o:#E7892B;--b:#3B6FD4;--g:#1F8A70;--line:#E2E7EE}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -70,6 +70,17 @@ nav button[aria-current=page]{color:var(--g);font-weight:700}
 .ai b{display:flex;align-items:center;gap:6px;color:var(--g)}.ai p{margin:4px 0}
 .ai small,.n2{color:var(--mute);font-size:12px}
 .ok{text-align:center;font-size:22px;font-weight:700;color:var(--g);margin:2px 0 8px}
+#login{position:fixed;inset:0;z-index:20;background:#fff;overflow:auto}
+#login[hidden]{display:none}
+.lg-top{background:var(--g);color:#fff;text-align:center;padding:calc(48px + env(safe-area-inset-top)) 24px 40px;border-radius:0 0 32px 32px}
+.lg-top i{width:84px;height:84px;margin:0 auto 14px;border-radius:26px;background:#fff;color:var(--g);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.lg-top h1{font-size:24px}.lg-top p{margin:6px 0 14px}
+.lgc{display:flex;justify-content:center;gap:8px}.lgc .tag{background:#fff;color:var(--ink);margin:0}
+.lg-form{max-width:480px;margin:0 auto;padding:12px 20px calc(24px + env(safe-area-inset-bottom))}
+.lg-form label{display:block;font-size:13px;color:var(--mute);margin-top:12px}
+.in{display:block;width:100%;min-height:48px;margin-top:6px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fff}
+.lg-form #lgin{margin-top:20px}
+.or{text-align:center;color:var(--mute);font-size:13px;margin:14px 0 0}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -79,6 +90,10 @@ nav button[aria-current=page]{color:var(--g);font-weight:700}
 <button class="fab" id="fab" aria-label="お題を撮る"></button>
 <nav aria-label="メニュー"><button data-v="q"></button><button data-v="d"></button><button data-v="p"></button></nav>
 <div id="sheet" hidden role="dialog" aria-modal="true"></div>
+<section id="login" aria-label="ログイン">
+<div class="lg-top"><i id="lgo"></i><h1>街たんけんノート(仮)</h1><p>街を歩いて、発見を図鑑に集めよう</p><div class="lgc"><span class="tag o">発見</span><span class="tag b">ことば</span><span class="tag g">SDGs</span></div></div>
+<div class="lg-form"><label>メールアドレス<input class="in" type="email" autocomplete="off" placeholder="sample@example.com"></label><label>パスワード<input class="in" type="password" autocomplete="off" placeholder="••••••••"></label><button class="btn" id="lgin">ログイン</button><p class="or">または</p><button class="btn s" id="guest">ゲストではじめる</button><p class="n2" style="margin-top:14px">デモのため、入力内容は保存・送信されません。本物のメールアドレスやパスワードは入れないでください。</p></div>
+</section>
 <script>
 const IC={flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',book:'<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H19v-3"/>',coin:'<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3H15"/>',cam:'<path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/>',word:'<path d="M4 6h10M9 6c0 5-3 8-5 9M6 10c1 2 4 4 7 5M13 20l4-10 4 10M14.5 17h5"/>',leaf:'<path d="M5 19c0-8 5-14 15-14 0 9-5 15-13 15M5 19c3-5 6-8 10-10"/>',check:'<path d="M5 12l5 5 9-7"/>',spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>'};
 const ic=(n,s=24)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
@@ -100,7 +115,7 @@ return `<h1>図鑑</h1><p class="sub">${S.done.length}ページ集めた</p><sec
 return d?`<figure class="st ${q.c}">${P[q.id]?`<img class="im" src="${P[q.id]}" alt="${q.n}">`:`<div class="im">${ic(q.i,34)}</div>`}<figcaption>${q.n}</figcaption></figure>`:`<figure class="st e"><div class="im">？</div><figcaption>${q?'未発見':'？？？'}</figcaption></figure>`}).join('')+'</div></section>'}
 function pv(){const n=S.pts%50;
 return `<h1>ポイント</h1><p class="sub">協賛店のクーポンと交換できます</p><section class="card"><div class="ring"><svg viewBox="0 0 100 100" width="96" height="96"><circle cx="50" cy="50" r="42" fill="none" stroke="#E4E9F0" stroke-width="10"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--g)" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="${264*(1-n/50)}" transform="rotate(-90 50 50)"/></svg><b>Lv.${lv()}</b></div><div><p class="big">${S.pts}<small>pt</small></p><p class="pt">次のレベルまであと${50-n}pt</p></div></section><h2 style="margin-bottom:10px">協賛店のクーポン<span class="pt">(サンプル)</span></h2>`+
-[['○○カフェ','ドリンク50円引き',100],['△△公園の売店','ソフトクリーム20円引き',200],['□□商店街','コロッケ1個おまけ',300]].map(([a,b,c])=>`<article class="tk"><div><h2>${a}</h2><p>${b}</p></div><button data-cp ${S.pts>=c?'':'disabled'}>${c}pt<br>で交換</button></article>`).join('')+'<button class="lnk" id="rs">最初からやり直す</button>'}
+[['○○カフェ','ドリンク50円引き',100],['△△公園の売店','ソフトクリーム20円引き',200],['□□商店街','コロッケ1個おまけ',300]].map(([a,b,c])=>`<article class="tk"><div><h2>${a}</h2><p>${b}</p></div><button data-cp ${S.pts>=c?'':'disabled'}>${c}pt<br>で交換</button></article>`).join('')+'<button class="lnk" id="lo">ログアウト</button><button class="lnk" id="rs">最初からやり直す</button>'}
 function render(){app.innerHTML={q:qv,d:dv,p:pv}[view]();
 $('#lg').innerHTML=ic('flag',20);$('#lvc').textContent='Lv.'+lv();$('#ptc').innerHTML=ic('coin',16)+S.pts;$('#fab').innerHTML=ic('cam',28);
 const T={q:['flag','お題'],d:['book','図鑑'],p:['coin','ポイント']};
@@ -119,8 +134,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)r
 if(t.dataset.v){view=t.dataset.v;render();scrollTo(0,0)}
 else if(t.dataset.cap)openCap(t.dataset.cap);
 else if(t.id==='fab'){const q=Q.find(q=>!S.done.includes(q.id));q?openCap(q.id):alert('きょうのお題は全部クリアしました！')}
+else if(t.id==='lgin'||t.id==='guest'){$('#login').hidden=true;scrollTo(0,0)}
+else if(t.id==='lo'){$('#login').hidden=false}
 else if(t.dataset.cp!==undefined)alert('デモのため、交換はできません。');
 else if(t.id==='rs'&&confirm('進み具合をリセットしますか？')){S={pts:0,done:[]};save();render()}});
+$('#lgo').innerHTML=ic('flag',44);
 render();
 </script>
 </body>
